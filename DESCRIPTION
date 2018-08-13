@@ -1,0 +1,15 @@
+Package: findWeb
+Type: Package
+Title: Ingress: Find a mapping of a given linking structure to a set of real-world portals
+Version: 1.0
+Date: 2018-08-13
+Author: Sigbert Ingress
+Maintainer: Sigbert Ingress <Sigbert.ingress@gmail.com>
+Description: Given a linking structure and set of real-world portals a automatic search is done to find a set of real-world portals such that athe link structure can be build. Additionally a modification by hand is possible.  
+License: GPL (>= 3)
+Depends: FNN
+LinkingTo: Rcpp
+Imports: Rcpp
+RoxygenNote: 6.1.0
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr

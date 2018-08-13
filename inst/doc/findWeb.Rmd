@@ -1,0 +1,97 @@
+---
+title: "findWeb"
+author: "Sigbert Ingress (sigbert.ingress@gmail.com)"
+date: "13 August 2018"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## An example 
+
+In this example we will create for a set of thirty portal a [fishbone (or herringbone)](https://www.youtube.com/watch?v=FkHtelZxgtg) linking structure. 
+
+```{r echo = FALSE}
+  library("findWeb")
+  g <- fishbone(8)
+  plot(g)
+```
+
+The fishbone(8) structure consists of nine portals, twentyone links and 19 fields. It was one of the popular linking structures since the EXO5 Controller event in October 2017 since it is simple. And in any case no Softbank Ultra Link is necessary to build it.  
+
+### Step 1: Create a portal positions and web
+
+At first we need to generate some x-y-coordinates for portals
+
+```{r createportal}
+  library("findWeb")
+  set.seed(1)
+  n  <- 25
+  xy <- cbind(runif(25), runif(25))
+  xy
+```
+
+and then we need to create a web, here the fishbone(8)
+
+```{r createweb}
+  g <- fishbone(8)
+  plot(g)
+```
+
+Note: the random seed needs to be fixed since the portal positions are generated randomly and the optimization algorithm uses a random search.
+
+### Step 2: Create an initial link structure
+
+Then we have to create a starting link structure.
+
+```{r config}
+  g0 <- web(g, xy)
+  plot(g0)
+```
+
+There are two requirements for a perfect link structure:
+
+* there should be no intersections between links and
+* the number of portals inside a field should be larger than in the target linking structure.
+
+The second condition means that for the fishbone(8) the largest field should contain at least six portals. The error value used is the number of link intersections plus number of portals missing to the target link structure. 
+
+### Step 3: Optimize the link structure by program
+
+The next step is an optimization of the start link structure. The optimizeWeb generates two (at start and end) or even more plots.
+
+```{r}
+  g1 <- optimizeWeb(g0)
+```
+
+In this case the optmization algorithm has found a solution with no errors. It is not guranteed that the program will find a link structure with no errors!
+
+Since the a random search algorithm is used you may repeat the search several times and may become a different solution. 
+
+```{r}
+  g11 <- optimizeWeb(g0)
+```
+
+### Step 4: Optimize the link structure by hand
+
+However, the solution the program found is not optimal: the outer portals are far away from each other. 
+
+```{r echo=FALSE}
+gi <- swap(g1, c(9, 4, 3), c(13,7, 15))
+g2 <- swap(gi, c(23,3),c(20, 8))
+```
+
+```{r eval=FALSE}
+  g2 <- swapi(g1)  # swap 9-13, 4-7, 20-15, 23-20, 3-8
+  plot(g2)
+```
+
+```{r  echo=FALSE}
+  plot(g2)
+```
