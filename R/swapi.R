@@ -4,6 +4,7 @@
 #' To finish press Esc or choose two portals which do no belong to the given linking structure.
 #
 #' @param g a web
+#' @param ... further parameters for plotting, see \link{\code{plot.web}}
 #'
 #' @return the modified web
 #' @export
@@ -16,9 +17,9 @@
 #' gs <- swapi(gf)
 #' summary(gs)
 #' }
-swapi <- function(g) {
+swapi <- function(g, ...) {
   repeat {
-    plot(g)
+    plot(g, ...)
     p <- identify(x=g$vertices, n=2, plot=FALSE)
     if(all(is.na(g$map[p])))  break
     g <- swap(g, p[1], p[2])

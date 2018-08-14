@@ -4,10 +4,12 @@
 \alias{swapi}
 \title{swapi}
 \usage{
-swapi(g)
+swapi(g, ...)
 }
 \arguments{
 \item{g}{a web}
+
+\item{...}{further parameters for plotting, see \link{\code{plot.web}}}
 }
 \value{
 the modified web
