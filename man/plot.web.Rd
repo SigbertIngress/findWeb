@@ -9,10 +9,15 @@
 \arguments{
 \item{x}{a web}
 
-\item{...}{further parameters (unused)}
+\item{...}{further parameters for the plot (defaults: \code{pch=19}, \code{asp=TRUE}, \code{xlab='x'}, \code{ylab='y'}).}
 }
 \description{
-plot.web
+Plots a web. Use \code{...} further plotting, parameters see \code{\link[graphics]{plot}}. Note that \code{x}, \code{y} and \code{col} will be overwritten.
+}
+\details{
+Blue lines represent intersection free links, whereas red lines represent links which have interscetions.
+Blue numbers represent the portal numbers of the target link structure, 
+black numbers the portal number of the given portal set.
 }
 \examples{
 xy <- cbind(runif(30), runif(30))
@@ -20,4 +25,5 @@ g  <- fishbone(8)
 plot(g)
 gf <- web(g, xy)
 plot(gf)
+plot(gf, xlim=c(0.5,1), ylim=c(0,1))
 }
