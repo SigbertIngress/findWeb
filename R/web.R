@@ -32,6 +32,7 @@ web.default <- function (g, px, k=10, ...) {
   nx <- nrow(px)
   ng <- nrow(g$vertices)
   if (nx+2<ng) stop("vertices(x)<vertices(g)")
+  if (k>ng) k <- ng
   #
   gv  <- scale(g$vertices)
   pr  <- sqrt(rowSums(gv^2))

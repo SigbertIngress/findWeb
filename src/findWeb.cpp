@@ -122,7 +122,7 @@ List evaluateC (List g) {
   }
   //
   errPit = pointsInTrianglesC(mapped, faces);
-  for (i=0; i<faces.nrow(); i++) {
+  for (i=0; i<faces.nrow(); i++) { 
     if (errPit[i]<pts[i]) errPit[i] = (pts[i]-errPit[i]); else errPit[i]=0;
   }
   return(List::create(Named("Intersection")=errInter, Named("VertDiff")=errPit));

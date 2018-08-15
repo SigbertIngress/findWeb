@@ -4,7 +4,7 @@
 #' To finish press Esc or choose two portals which do no belong to the given linking structure.
 #
 #' @param g a web
-#' @param ... further parameters for plotting, see \link{\code{plot.web}}
+#' @param ... further parameters for plotting, see \code{\link{plot.web}}
 #'
 #' @return the modified web
 #' @export

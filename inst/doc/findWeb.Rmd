@@ -1,8 +1,10 @@
 ---
 title: "findWeb"
 author: "Sigbert Ingress (sigbert.ingress@gmail.com)"
-date: "13 August 2018"
-output: rmarkdown::html_vignette
+date: "15 August 2018"
+output: 
+  html_document:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{Put the title of your vignette here}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,11 +15,11 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## An example 
+## An artifical example 
 
-In this example we will create for a set of thirty portal a [fishbone (or herringbone)](https://www.youtube.com/watch?v=FkHtelZxgtg) linking structure. 
+In this example we will create for a set of thirty portals a [fishbone (or herringbone)](https://www.youtube.com/watch?v=FkHtelZxgtg) linking structure. 
 
-```{r echo = FALSE}
+```{r, echo = FALSE, fig.width = 7, fig.height = 7}
   library("findWeb")
   g <- fishbone(8)
   plot(g)
@@ -32,15 +34,15 @@ At first we need to generate some x-y-coordinates for portals
 ```{r createportal}
   library("findWeb")
   set.seed(1)
-  n  <- 25
-  xy <- cbind(runif(25), runif(25))
+  n  <- 20
+  xy <- cbind(runif(n), runif(n))
   xy
 ```
 
-and then we need to create a web, here the fishbone(8)
+and then we need to create a target link structure (or web), here the fishbone(6)
 
-```{r createweb}
-  g <- fishbone(8)
+```{r}
+  g <- fishbone(6)
   plot(g)
 ```
 
@@ -50,7 +52,7 @@ Note: the random seed needs to be fixed since the portal positions are generated
 
 Then we have to create a starting link structure.
 
-```{r config}
+```{r, fig.width = 7, fig.height = 7}
   g0 <- web(g, xy)
   plot(g0)
 ```
@@ -60,13 +62,13 @@ There are two requirements for a perfect link structure:
 * there should be no intersections between links and
 * the number of portals inside a field should be larger than in the target linking structure.
 
-The second condition means that for the fishbone(8) the largest field should contain at least six portals. The error value used is the number of link intersections plus number of portals missing to the target link structure. 
+The second condition means that for the fishbone(n) the largest field should contain at least n-2 portals. The error value used is the number of link intersections plus number of portals for each field missing to the target link structure. 
 
 ### Step 3: Optimize the link structure by program
 
 The next step is an optimization of the start link structure. The optimizeWeb generates two (at start and end) or even more plots.
 
-```{r}
+```{r, fig.width = 7, fig.height = 7}
   g1 <- optimizeWeb(g0)
 ```
 
@@ -83,15 +85,63 @@ Since the a random search algorithm is used you may repeat the search several ti
 However, the solution the program found is not optimal: the outer portals are far away from each other. 
 
 ```{r echo=FALSE}
-gi <- swap(g1, c(9, 4, 3), c(13,7, 15))
-g2 <- swap(gi, c(23,3),c(20, 8))
+g2 <- swap(g1, c(18,12), c(4,19))
 ```
 
 ```{r eval=FALSE}
-  g2 <- swapi(g1)  # swap 9-13, 4-7, 20-15, 23-20, 3-8
+  g2 <- swapi(g1)  # swap 18-4, 12-19
   plot(g2)
 ```
 
-```{r  echo=FALSE}
+```{r, , fig.width = 7, fig.height = 7, echo=FALSE}
   plot(g2)
 ```
+
+## A real-world example
+
+Part of the package is a data set about portals in the Leisepark in Berlin, Germany ([Ingress intel map](https://www.ingress.com/intel?ll=52.529436,13.422475&z=17)).
+
+```{r}
+  library("findWeb")
+  data(leisepark)
+  head(leisepark)
+```
+
+Convert the latitudes and longitudes to xy-coordinates
+
+```{r}
+  xy <- ll2xy(leisepark$lon, leisepark$lat)
+  head(xy)
+```
+
+Let us create now as target link structure a homogeneous field of order four.
+
+```{r, fig.width = 7, fig.height = 7}
+  g <- homogeneous(4)
+  plot(g)
+```
+
+Apply the real-world portal positions to the target link structure
+
+```{r, fig.width = 7, fig.height = 7}
+  g0 <- web(g, xy)
+  plot(g0)
+```
+
+Now optimize the positions
+
+```{r, fig.width = 7, fig.height = 7}
+  g1 <- optimizeWeb(g0)
+```
+
+There are still some portals inside in the link structure which are not used. Maybe the link structure can be made more compact (=shorter ways for our agents) which could be achieved by hand optimization.
+
+```{r eval=FALSE}
+  g2 <- swapi(g1)
+```
+
+[__Enjoy planing and linking, agents!__](https://plus.google.com/collection/wlnaV)
+
+## Thanks ##
+
+Finally, a thanks to Stefan Dirsch for testing the R package ;)
