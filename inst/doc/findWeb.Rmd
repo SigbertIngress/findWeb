@@ -1,7 +1,7 @@
 ---
 title: "findWeb"
 author: "Sigbert Ingress (sigbert.ingress@gmail.com)"
-date: "15 August 2018"
+date: "02 September 2018"
 output: 
   html_document:
     toc: true
@@ -11,42 +11,42 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r setup, include=FALSE}
+```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library("findWeb")
 ```
 
-## An artifical example 
+## An example 
 
-In this example we will create for a set of thirty portals a [fishbone (or herringbone)](https://www.youtube.com/watch?v=FkHtelZxgtg) linking structure. 
+__Some general remark:__ The algorithms used relay heavily on optimization. Therefore it is not guranteed that the algorithms will find always a errorfree solution (even when you see the errorfree solution).
+
+### The Leisepark in Berlin ###
+
+Part of the package is a data set about portals in the Leisepark in Berlin, Germany ([Ingress intel map](https://www.ingress.com/intel?ll=52.529436,13.422475&z=17)).
+
+```{r}
+  library("findWeb")
+  data(leisepark)
+  head(leisepark)
+```
+
+### Step 1: Compute xy portal positions from latitude annd longitude and a web
+
+Convert the latitudes and longitudes to xy-coordinates
+
+```{r}
+  xy <- ll2xy(leisepark$lon, leisepark$lat)
+  head(xy)
+```
+
+Next, we will create as target linking structure a [fishbone (or herringbone)](https://www.youtube.com/watch?v=FkHtelZxgtg) linking structure. 
 
 ```{r, echo = FALSE, fig.width = 7, fig.height = 7}
-  library("findWeb")
   g <- fishbone(8)
   plot(g)
 ```
 
 The fishbone(8) structure consists of nine portals, twentyone links and 19 fields. It was one of the popular linking structures since the EXO5 Controller event in October 2017 since it is simple. And in any case no Softbank Ultra Link is necessary to build it.  
-
-### Step 1: Create a portal positions and web
-
-At first we need to generate some x-y-coordinates for portals
-
-```{r createportal}
-  library("findWeb")
-  set.seed(1)
-  n  <- 20
-  xy <- cbind(runif(n), runif(n))
-  xy
-```
-
-and then we need to create a target link structure (or web), here the fishbone(6)
-
-```{r}
-  g <- fishbone(6)
-  plot(g)
-```
-
-Note: the random seed needs to be fixed since the portal positions are generated randomly and the optimization algorithm uses a random search.
 
 ### Step 2: Create an initial link structure
 
@@ -68,7 +68,10 @@ The second condition means that for the fishbone(n) the largest field should con
 
 The next step is an optimization of the start link structure. The optimizeWeb generates two (at start and end) or even more plots.
 
+Note: the random seed needs to be fixed since the portal positions are generated randomly and the optimization algorithm uses a random search.
+
 ```{r, fig.width = 7, fig.height = 7}
+  set.seed(1)
   g1 <- optimizeWeb(g0)
 ```
 
@@ -77,6 +80,7 @@ In this case the optmization algorithm has found a solution with no errors. It i
 Since the a random search algorithm is used you may repeat the search several times and may become a different solution. 
 
 ```{r}
+  set.seed(0)
   g11 <- optimizeWeb(g0)
 ```
 
@@ -85,11 +89,11 @@ Since the a random search algorithm is used you may repeat the search several ti
 However, the solution the program found is not optimal: the outer portals are far away from each other. 
 
 ```{r echo=FALSE}
-g2 <- swap(g1, c(18,12), c(4,19))
+g2 <- swap(g1, 42, 16)
 ```
 
 ```{r eval=FALSE}
-  g2 <- swapi(g1)  # swap 18-4, 12-19
+  g2 <- swapi(g1)  # swap 42-16
   plot(g2)
 ```
 
@@ -97,51 +101,139 @@ g2 <- swap(g1, c(18,12), c(4,19))
   plot(g2)
 ```
 
-## A real-world example
+### What can I do if the program does not find a solution and neither me, too? ###
 
-Part of the package is a data set about portals in the Leisepark in Berlin, Germany ([Ingress intel map](https://www.ingress.com/intel?ll=52.529436,13.422475&z=17)).
+The are two parameters you can modify
 
-```{r}
-  library("findWeb")
-  data(leisepark)
-  head(leisepark)
-```
-
-Convert the latitudes and longitudes to xy-coordinates
+* increase the number of iterations in the optimization
 
 ```{r}
-  xy <- ll2xy(leisepark$lon, leisepark$lat)
-  head(xy)
+  set.seed(0)
+  g12 <- optimizeWeb(g0, maxit=1000000) # default: 100000
 ```
 
-Let us create now as target link structure a homogeneous field of order four.
+* improve the starting position by rotation for the structure
 
 ```{r, fig.width = 7, fig.height = 7}
-  g <- homogeneous(4)
-  plot(g)
+  g02 <- web(g, xy, rot=32) # default: 16
+  plot(g02)
 ```
 
-Apply the real-world portal positions to the target link structure
+In general the optimization algorithm will honor it if you have more portals available than your target structure requires. 
 
-```{r, fig.width = 7, fig.height = 7}
-  g0 <- web(g, xy)
-  plot(g0)
+## Creating a link plan##
+
+As the optimization algorithm the link plan created by the software should only be starting point for a real linking plan.
+
+### For a single agent (_n=1_) ###
+
+Once you are created a target link structure you need to know which portals to visit and how to link such that you get the maximum number of fields. 
+
+![](half-plane.png)
+
+We follow the half-plan approach as shown in the video of Michael Hartley: [A Fully General Ingress Maxfields Algorithm](https://www.youtube.com/watch?v=iH0JMfR7BTI). The screen shot shows an agent who has a general walking direction  east south east (= -22.5 degree or approx -0.0175 radian). 
+
+We use the first linking structure which as been created for the Leisepark
+
+```{r}
+  g2 <- linkPlan1(g1)
+  # agent comes from -1.877423 radian or -107 degree or south south west
+  plot(g2)
 ```
 
-Now optimize the positions
+The agent starts at portal blue 9, walks to portal blue 8, ... until finally he ends up at portal blue 2, following the pink line. 
 
-```{r, fig.width = 7, fig.height = 7}
-  g1 <- optimizeWeb(g0)
-```
-
-There are still some portals inside in the link structure which are not used. Maybe the link structure can be made more compact (=shorter ways for our agents) which could be achieved by hand optimization.
+You may visually check the path and the link plan by (press enter after each agent move)
 
 ```{r eval=FALSE}
-  g2 <- swapi(g1)
+  getPlan(g2, quiet=TRUE)
 ```
 
-[__Enjoy planing and linking, agents!__](https://plus.google.com/collection/wlnaV)
+The parameter wait determines how the plan is visualiuzed. A negative value (default) means continue after keypress, a positive value continues after wait seconds and a zero does not plot the plan at all.
+
+Now lets head the agent mainly in direction east, coming from the west (= -180 degree = -3.1415 radian)
+
+```{r}
+  g2 <- linkPlan1(g1, dir=-pi)
+  # 2.215663 rad approx. 127 degree, 
+  # agent walks comes approxmately from direction north west  
+  plot(g2)
+```
+
+And which keys (and softbank ultralinks) are required to build the structure:
+
+```{r}
+ g3 <- linkPlan1(g1)
+ plot(g3)
+ getPlan(g3, wait=0)
+ getPlan(g3, names=leisepark$shortname, wait=0)
+```
+
+### For more than one agent (_n>=1_) ###
+
+For creating a link plan for several agents we follow a different approach. We do it the [japanese way](https://plus.google.com/+yusin0919k/posts/EnWC1WuVbEb) starting from the center and building the fields to the outer.
+
+![](tokyo_start.png)&nbsp;![](tokyo_end.png)
+
+
+```{r echo=FALSE}
+set.seed(0)
+n <- 17
+x <- cbind(rnorm(n), rnorm(n))
+i <- which.min(rowSums(x^2))
+r <- max(rowSums(x^2))
+x <- scale(x, center=x[i,], scale=FALSE)
+plot(x, pch=19, asp=TRUE, axes=FALSE, xlab="", ylab="", col=1+((1:n)==i))
+box()
+a <- atan2(x[,2], x[,1])
+qa <- quantile(a, c(0.5-1/3, 0.5, 0.5+1/3))
+for(i in 1:3) lines(c(0, r*cos(qa[i])), c(0, r*sin(qa[i])), col="red")
+```
+
+From a starting portal (red) we decompose the area in _n_ sectors (here _n=3_ sectors). Each of the _n_ agents goes to the portals in his sector and links back to all the portals all the agents have visited already. 
+
+__NOTE__: Is is not clear if this approach leads always to the maximum field number!
+
+### A cobweb in the Leisepark ###
+
+As a first step we will create a cobweb with three portals at each leg
+
+```{r}
+g <- cobweb(3)
+plot(g)
+```
+
+Then find a solution at the Leisepark
+
+```{r}
+g0 <- web(g, xy)
+set.seed(1)
+g1 <- optimizeWeb(g0)
+plot(g1)
+```
+
+Finally we create a link plan for three agents 
+
+```{r}
+g2 <- linkPlanN(g1, agents=3)
+plot(g2)
+```
+
+and look for the linking and the keys 
+
+```{r}
+getPlan(g2, wait=1) 
+```
+
+Of course, a single agent could have done it alone ;)
+
+```{r}
+g2 <- linkPlan1(g1, direction=-pi)
+getPlan(g2, wait=1) 
+```
 
 ## Thanks ##
 
-Finally, a thanks to Stefan Dirsch for testing the R package ;)
+Finally, a thanks to Stefan Dirsch for testing the R package and Michael Hartley for [his videos](https://www.youtube.com/user/mike40033) ;)
+
+[__Enjoy planing and linking, agents!__](https://plus.google.com/collection/wlnaV)

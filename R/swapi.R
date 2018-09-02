@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun
+#' \dontrun{
 #' xy <- cbind(runif(20), runif(20))
 #' g  <- fishbone(8)
 #' gf <- web(g, xy)

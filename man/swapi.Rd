@@ -18,3 +18,12 @@ the modified web
 Swaps interactively the given structure between portals for web optimization by hand. 
 To finish press Esc or choose two portals which do no belong to the given linking structure.
 }
+\examples{
+\dontrun{
+xy <- cbind(runif(20), runif(20))
+g  <- fishbone(8)
+gf <- web(g, xy)
+gs <- swapi(gf)
+summary(gs)
+}
+}

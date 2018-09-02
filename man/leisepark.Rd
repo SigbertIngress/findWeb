@@ -9,7 +9,7 @@
 data(leisepark)
 }
 \description{
-The dataset contains the position (longitude, latitude) of 43 portals in the Leisepark in Berlin, Germany.
+The dataset contains the position (longitude, latitude) of 43 portals in the Leisepark in Berlin, Germany (\href{https://www.ingress.com/intel?ll=52.529436,13.422475&z=17}{Intel map}).
 }
 \examples{
 data(leisepark)

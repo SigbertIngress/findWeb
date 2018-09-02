@@ -7,7 +7,7 @@
 \usage{
 web(g, ...)
 
-\method{web}{default}(g, px, k = 10, ...)
+\method{web}{default}(g, px, k = 10, rot = 8, ...)
 }
 \arguments{
 \item{g}{web: a given linking structure}
@@ -17,6 +17,8 @@ web(g, ...)
 \item{px}{numeric matrix: xy-coordinates of portals}
 
 \item{k}{numeric: number of neighbours (default: 10)}
+
+\item{rot}{numeric: number of rotations to find a good starting position (default: 8)}
 }
 \value{
 web with starting configuration

@@ -9,6 +9,7 @@ NULL
 #' @param g web: a given linking structure
 #' @param px numeric matrix: xy-coordinates of portals
 #' @param k numeric: number of neighbours (default: 10)
+#' @param rot numeric: number of rotations to find a good starting position (default: 8)
 #' @param ... further parameters (unused)
 #'
 #' @return web with starting configuration
@@ -28,7 +29,7 @@ web <- function(g, ...) UseMethod("web")
 #' @method web default
 #' @export
 #' @importFrom FNN knnx.index
-web.default <- function (g, px, k=10, ...) {
+web.default <- function (g, px, k=10, rot=8, ...) {
   nx <- nrow(px)
   ng <- nrow(g$vertices)
   if (nx+2<ng) stop("vertices(x)<vertices(g)")
@@ -38,12 +39,12 @@ web.default <- function (g, px, k=10, ...) {
   pr  <- sqrt(rowSums(gv^2))
   pa  <- atan2(gv[,2], gv[,1])
   ret <- list()
-  for (a in 1:16) { # rotate structure
-    gv <- cbind(pr*cos(pa+a*pi/8), pr*sin(pa+a*pi/8))
+  for (a in 1:rot) { # rotate structure
+    gv <- cbind(pr*cos(pa+2*a*pi/rot), pr*sin(pa+2*a*pi/rot))
     pv <- scale(px)
-    index <- knnx.index(data =cbind(atan2(pv[,2],pv[,1]), sqrt(rowSums(pv^2))),
-                        query=cbind(atan2(gv[,2],gv[,1]), sqrt(rowSums(gv^2))),
-                        k=k)
+    index <- FNN::knnx.index(data =cbind(atan2(pv[,2],pv[,1]), sqrt(rowSums(pv^2))),
+                             query=cbind(atan2(gv[,2],gv[,1]), sqrt(rowSums(gv^2))),
+                             k=k)
     map <- rep(NA, nrow(px))
     for (i in 1:nrow(index)) {
       success <- FALSE
@@ -63,4 +64,5 @@ web.default <- function (g, px, k=10, ...) {
   }  
   eret <- sapply(ret, evaluate)
   return(ret[[which.min(eret)]])
+  #return(ret)
 }
