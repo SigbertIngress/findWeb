@@ -28,7 +28,7 @@ library("findWeb")
   g11 <- optimizeWeb(g0)
 
 ## ----echo=FALSE----------------------------------------------------------
-g2 <- swap(g1, 42, 16)
+  g2 <- swap(g1, 42, 16)
 
 ## ----eval=FALSE----------------------------------------------------------
 #    g2 <- swapi(g1)  # swap 42-16
@@ -96,6 +96,27 @@ plot(g2)
 getPlan(g2, wait=1) 
 
 ## ------------------------------------------------------------------------
-g2 <- linkPlan1(g1, direction=-pi)
-getPlan(g2, wait=1) 
+g4 <- linkPlan1(g1, direction=-pi)
+getPlan(g4, wait=1) 
+
+## ------------------------------------------------------------------------
+plot(g4, blue=FALSE) # do not plot the blue numbers
+plot(g4, black=FALSE) # do not plot the black numbers
+plot(g4, links=FALSE) # do not plot the links
+plot(g4, pathes=FALSE) # do not plot the agent pathes
+
+## ----eval=FALSE----------------------------------------------------------
+#  g0 <- fishbone(8)
+#  g1 <- web(g0, xy)
+#  g2 <- optimizeWeb(g1)
+#  g3 <- linkPlan1(g2)
+#  plot(g3, blue=FALSE)
+
+## ------------------------------------------------------------------------
+library("magrittr") # for %>% operator
+fishbone(8) %>% web(xy) %>% optimizeWeb() %>% linkPlan1() %>% plot(blue=FALSE)
+
+## ----eval=FALSE----------------------------------------------------------
+#  g <- fishbone(8) %>% web(xy) %>% optimizeWeb() %>% linkPlan1()
+#  plot(g, blue=FALSE)
 

@@ -4,12 +4,14 @@
 \alias{cobweb}
 \title{cobweb}
 \usage{
-cobweb(n, r = 0.5)
+cobweb(n, r = 0.5, central = FALSE)
 }
 \arguments{
 \item{n}{numeric: number of portals on each leg at the cobweb}
 
 \item{r}{numeric: distance between nested triangles, the quotient between incirle and cricumcircle of an equilateral triangle (default: 0.5)}
+
+\item{central}{logical: create central portal (default: FALSE)}
 }
 \value{
 a cobweb

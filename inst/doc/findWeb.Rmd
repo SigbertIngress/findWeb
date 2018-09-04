@@ -1,7 +1,7 @@
 ---
 title: "findWeb"
 author: "Sigbert Ingress (sigbert.ingress@gmail.com)"
-date: "02 September 2018"
+date: "04 September 2018"
 output: 
   html_document:
     toc: true
@@ -89,7 +89,7 @@ Since the a random search algorithm is used you may repeat the search several ti
 However, the solution the program found is not optimal: the outer portals are far away from each other. 
 
 ```{r echo=FALSE}
-g2 <- swap(g1, 42, 16)
+  g2 <- swap(g1, 42, 16)
 ```
 
 ```{r eval=FALSE}
@@ -228,12 +228,50 @@ getPlan(g2, wait=1)
 Of course, a single agent could have done it alone ;)
 
 ```{r}
-g2 <- linkPlan1(g1, direction=-pi)
-getPlan(g2, wait=1) 
+g4 <- linkPlan1(g1, direction=-pi)
+getPlan(g4, wait=1) 
+```
+
+## Helpful informations ##
+### Plotting ###
+
+The plot command offers additional parameters which are set on TRUE by default.
+
+```{r}
+plot(g4, blue=FALSE) # do not plot the blue numbers
+plot(g4, black=FALSE) # do not plot the black numbers
+plot(g4, links=FALSE) # do not plot the links
+plot(g4, pathes=FALSE) # do not plot the agent pathes
+```
+
+### Using the forward pipe operator ###
+
+To simplify the typing you may use the forward pipe operator %>% of the library magrittr. Instead of writing
+
+```{r eval=FALSE}
+g0 <- fishbone(8)
+g1 <- web(g0, xy)
+g2 <- optimizeWeb(g1)
+g3 <- linkPlan1(g2)
+plot(g3, blue=FALSE)
+```
+
+you may use
+
+```{r}
+library("magrittr") # for %>% operator
+fishbone(8) %>% web(xy) %>% optimizeWeb() %>% linkPlan1() %>% plot(blue=FALSE)
+```
+
+Or alternatively
+
+```{r  eval=FALSE}
+g <- fishbone(8) %>% web(xy) %>% optimizeWeb() %>% linkPlan1()
+plot(g, blue=FALSE)
 ```
 
 ## Thanks ##
 
-Finally, a thanks to Stefan Dirsch for testing the R package and Michael Hartley for [his videos](https://www.youtube.com/user/mike40033) ;)
+Finally, a thanks to Stefan Dirsch for testing the R package, Michael Hartley for [his videos](https://www.youtube.com/user/mike40033) and the authors of R package FNN: [Fast Nearest Neighbor Search Algorithms and Applications](cran.r-project.org/web/packages/FNN/index.html) ;)
 
 [__Enjoy planing and linking, agents!__](https://plus.google.com/collection/wlnaV)

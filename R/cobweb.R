@@ -4,6 +4,7 @@
 #'
 #' @param n numeric: number of portals on each leg at the cobweb
 #' @param r numeric: distance between nested triangles, the quotient between incirle and cricumcircle of an equilateral triangle (default: 0.5)
+#' @param central logical: create central portal (default: FALSE)
 #'
 #' @return a cobweb
 #' @export
@@ -11,7 +12,7 @@
 #' @examples
 #' g <- cobweb(4)
 #' plot(g)
-cobweb <- function(n, r=0.5) {
+cobweb <- function(n, r=0.5, central=FALSE) {
   if (r>0.5) stop("r must be smaller than 0.5")
   vertices <- matrix(0, ncol=2, nrow=0)
   edges    <- matrix(0, ncol=2, nrow=0)
@@ -28,6 +29,11 @@ cobweb <- function(n, r=0.5) {
                      c(ind[2], ind[3]-3))
     }
     edges <- rbind(edges, ind[-1], ind[-2], ind[-3])
+  }
+  if (central) {
+    vertices <- rbind(vertices, c(0,0))
+    p        <- 3*n+1
+    edges    <- rbind(edges, cbind(rep(p, 3), p-(1:3)))
   }
   edges <- normalize(edges)
   faces <- edges2faces(edges)

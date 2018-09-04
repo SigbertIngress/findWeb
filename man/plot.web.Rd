@@ -4,7 +4,8 @@
 \alias{plot.web}
 \title{plot.web}
 \usage{
-\method{plot}{web}(x, blue = TRUE, black = TRUE, ...)
+\method{plot}{web}(x, blue = TRUE, black = TRUE, links = TRUE,
+  pathes = TRUE, ...)
 }
 \arguments{
 \item{x}{a web}
@@ -12,6 +13,10 @@
 \item{blue}{logical: display the blue numbers (default: TRUE)}
 
 \item{black}{logical: display the black numbers (default: TRUE)}
+
+\item{links}{logical: display the links (default: TRUE)}
+
+\item{pathes}{logical: display the agent pathes (default: TRUE)}
 
 \item{...}{further parameters for the plot (defaults: \code{pch=19}, \code{asp=TRUE}, \code{xlab='x'}, \code{ylab='y'}).}
 }

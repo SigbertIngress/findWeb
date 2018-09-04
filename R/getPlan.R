@@ -13,7 +13,7 @@
 #'
 #' @return a list with ways &link plans, required items (keys, Softbank ultralinks)
 #' @export
-#' @importFrom graphics points lines
+#' @importFrom graphics points
 #'
 #' @examples
 #' set.seed(0)

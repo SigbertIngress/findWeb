@@ -7,7 +7,7 @@
 \usage{
 web(g, ...)
 
-\method{web}{default}(g, px, k = 10, rot = 8, ...)
+\method{web}{default}(g, px, k = 10, rot = 256, ...)
 }
 \arguments{
 \item{g}{web: a given linking structure}
@@ -18,7 +18,7 @@ web(g, ...)
 
 \item{k}{numeric: number of neighbours (default: 10)}
 
-\item{rot}{numeric: number of rotations to find a good starting position (default: 8)}
+\item{rot}{numeric: number of rotations (if >0) or iterations (if <0) to find a good starting position (default: 8)}
 }
 \value{
 web with starting configuration

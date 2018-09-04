@@ -12,9 +12,9 @@
 #' @param dir numeric: direction to rotate sectors (default: 0)  
 #'
 #' @return a web with a way and link plan
+#' @export
 #' @importFrom grDevices chull
 #' @importFrom stats quantile
-#' @export
 #'
 #' @examples
 linkPlanN <- function (g, agents=1, start=NULL, dir=0) {
@@ -39,22 +39,15 @@ linkPlanN <- function (g, agents=1, start=NULL, dir=0) {
   g$plan <- cbind(1:agents, rep(start, agents), rep(NA, agents))
   gs     <- scale(gv, center=gv[start,], scale=FALSE)
   ga     <- atan2(gs[,2], gs[,1])
-  gr     <- rowSums(gs^2)
+  gr     <- order(rowSums(gs^2))
   breaks <- if (agents==1) c(-pi, pi) else c(-pi, quantile(ga, (1:(agents-1))/agents), pi)
-  gc        <- findInterval(ga, breaks)
+  gc     <- findInterval(ga, breaks)
   gc[start] <- 0
-  i <- 1
-  while(sum(gc)) {
-    #    browser()
-    gi <- which(gc==i) 
-    if (length(gi)) {
-      p      <- which.min(gr[gi])
-      plani  <- linkBack(gv, g$edges, g$faces, g$pts, gi[p], which(gc==0))
-      g$plan <- rbind(g$plan, cbind(rep(i, nrow(plani)), plani))
-      gc[gi[p]] <- 0
-    }
-    i <- i+1
-    if (i>agents) i <- 1
+  for (i in 2:nv) {
+    agent  <- gc[gr[i]]
+    plani  <- linkBack(gv, g$edges, g$faces, g$pts, gr[i], which(gc==0))
+    g$plan <- rbind(g$plan, cbind(rep(agent, nrow(plani)), plani))
+    gc[gr[i]] <- 0
   }
   g
 }

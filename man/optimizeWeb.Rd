@@ -4,7 +4,7 @@
 \alias{optimizeWeb}
 \title{optimizeWeb}
 \usage{
-optimizeWeb(gi, maxit = 1e+05, plot = 5, maxt = Inf)
+optimizeWeb(gi, maxit = 1e+05, plot = 5, maxt = Inf, prob = TRUE)
 }
 \arguments{
 \item{gi}{a web}
@@ -14,12 +14,18 @@ optimizeWeb(gi, maxit = 1e+05, plot = 5, maxt = Inf)
 \item{plot}{numeric: minimal time (in seconds) between consecutive plots (default: 5)}
 
 \item{maxt}{numeric: maximal time (in seconds) the optimization runs (default: Inf)}
+
+\item{prob}{logical: if the swap probability is distant dependent or constant  (default: \code{TRUE})}
 }
 \value{
 a web
 }
 \description{
-Optimizes
+Tries to find an error free linking structure according to the target linking structure 
+on a given set of portals. A random search is done by swaping portals of the target linking 
+structure to a portal of the given portal set. If a portal is selected then a swaping portal 
+is choosen. If \code{prob=FALSE} then each other portal has the same probability to be selected.
+Otherwise the probability is distant dependent, portals farer away are less likely to be selected.
 }
 \examples{
 xy <- cbind(runif(20), runif(20))
