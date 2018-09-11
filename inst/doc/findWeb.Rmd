@@ -1,7 +1,7 @@
 ---
 title: "findWeb"
 author: "Sigbert Ingress (sigbert.ingress@gmail.com)"
-date: "04 September 2018"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   html_document:
     toc: true
@@ -13,12 +13,12 @@ vignette: >
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library("findWeb")
+suppressMessages(library("findWeb"))
 ```
 
 ## An example 
 
-__Some general remark:__ The algorithms used relay heavily on optimization. Therefore it is not guranteed that the algorithms will find always a errorfree solution (even when you see the errorfree solution).
+__Some general remark:__ The algorithms used relies heavily on optimization. Therefore it is not guranteed that the algorithms will find always a errorfree solution (even when you can spot the errorfree solution).
 
 ### The Leisepark in Berlin ###
 
@@ -86,7 +86,7 @@ Since the a random search algorithm is used you may repeat the search several ti
 
 ### Step 4: Optimize the link structure by hand
 
-However, the solution the program found is not optimal: the outer portals are far away from each other. 
+However, the solution the program found may not be optimal: the outer portals are far away from each other. 
 
 ```{r echo=FALSE}
   g2 <- swap(g1, 42, 16)
@@ -103,7 +103,7 @@ However, the solution the program found is not optimal: the outer portals are fa
 
 ### What can I do if the program does not find a solution and neither me, too? ###
 
-The are two parameters you can modify
+There are two parameters you may modify
 
 * increase the number of iterations in the optimization
 
@@ -112,10 +112,10 @@ The are two parameters you can modify
   g12 <- optimizeWeb(g0, maxit=1000000) # default: 100000
 ```
 
-* improve the starting position by rotation for the structure
+* improve the starting position by a finer rotation for the structure
 
 ```{r, fig.width = 7, fig.height = 7}
-  g02 <- web(g, xy, rot=32) # default: 16
+  g02 <- web(g, xy, rot=1024) # default: 256
   plot(g02)
 ```
 
@@ -149,22 +149,26 @@ You may visually check the path and the link plan by (press enter after each age
   getPlan(g2, quiet=TRUE)
 ```
 
-The parameter wait determines how the plan is visualiuzed. A negative value (default) means continue after keypress, a positive value continues after wait seconds and a zero does not plot the plan at all.
+A parameter "wait"" determines how the plan is visualised. A negative value (default) means continue after keypress, a positive value continues after wait seconds and a zero does not plot the plan at all.
 
 Now lets head the agent mainly in direction east, coming from the west (= -180 degree = -3.1415 radian)
 
 ```{r}
   g2 <- linkPlan1(g1, dir=-pi)
-  # 2.215663 rad approx. 127 degree, 
-  # agent walks comes approxmately from direction north west  
+  # agent comes from direction west and walks to the east
   plot(g2)
 ```
 
-And which keys (and softbank ultralinks) are required to build the structure:
+First create your link plan again:
 
 ```{r}
  g3 <- linkPlan1(g1)
  plot(g3)
+ ```
+ 
+View the pathes, the links and the keys (and softbank ultralinks) are required to build the structure:
+
+```{r}
  getPlan(g3, wait=0)
  getPlan(g3, names=leisepark$shortname, wait=0)
 ```

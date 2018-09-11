@@ -1,6 +1,6 @@
 ## ---- echo=FALSE---------------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
-library("findWeb")
+suppressMessages(library("findWeb"))
 
 ## ------------------------------------------------------------------------
   library("findWeb")
@@ -42,7 +42,7 @@ library("findWeb")
   g12 <- optimizeWeb(g0, maxit=1000000) # default: 100000
 
 ## ---- fig.width = 7, fig.height = 7--------------------------------------
-  g02 <- web(g, xy, rot=32) # default: 16
+  g02 <- web(g, xy, rot=1024) # default: 256
   plot(g02)
 
 ## ------------------------------------------------------------------------
@@ -55,13 +55,14 @@ library("findWeb")
 
 ## ------------------------------------------------------------------------
   g2 <- linkPlan1(g1, dir=-pi)
-  # 2.215663 rad approx. 127 degree, 
-  # agent walks comes approxmately from direction north west  
+  # agent comes from direction west and walks to the east
   plot(g2)
 
 ## ------------------------------------------------------------------------
  g3 <- linkPlan1(g1)
  plot(g3)
+
+## ------------------------------------------------------------------------
  getPlan(g3, wait=0)
  getPlan(g3, names=leisepark$shortname, wait=0)
 
